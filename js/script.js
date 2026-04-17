@@ -1,8 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const languageSelector = document.getElementById('languageSelector');
     
-    // Safety check: only run the rest of the script if the language selector exists in the HTML
-    // (Since it is currently commented out in your HTML, this prevents console errors)
+    // Sécurité : on arrête le script si l'élément n'existe pas sur la page
     if (!languageSelector) return;
 
     const languageBtn = languageSelector.querySelector('.language-btn');
@@ -10,31 +9,42 @@ document.addEventListener('DOMContentLoaded', function() {
     const languageOptions = languageSelector.querySelectorAll('.language-option');
     const bioElement = document.getElementById('bio');
     
-    // Define translations
+    // Vos textes originaux
     const translations = {
         en: {
+            langName: "English",
             bio: "Freelance illustrator exploring colorful worlds and telling their stories. Discover my work:"
         },
         fr: {
+            langName: "Français",
             bio: "Illustrateur freelance explorant des mondes colorés et racontant leurs histoires. Découvrez mon travail :"
         }
     };
+
+    // --- INITIALISATION ---
+    // On définit le français par défaut au chargement
+    const initialLang = 'fr'; 
+    bioElement.textContent = translations[initialLang].bio;
+    currentLanguage.textContent = translations[initialLang].langName;
     
-    // Toggle language dropdown
+    // --- LOGIQUE D'INTERACTION ---
+
+    // Ouvrir/Fermer le menu déroulant
     languageBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         languageSelector.classList.toggle('open');
     });
     
-    // Select a language
+    // Changer de langue au clic sur une option
     languageOptions.forEach(option => {
         option.addEventListener('click', function() {
             const lang = this.getAttribute('data-lang');
             
-            // Update current language text
-            currentLanguage.textContent = lang === 'en' ? 'English' : 'Français';
+            // Mise à jour du texte de la bio et du bouton
+            currentLanguage.textContent = translations[lang].langName;
+            bioElement.textContent = translations[lang].bio;
             
-            // Update active state
+            // Mise à jour visuelle des coches (checkmarks)
             languageOptions.forEach(opt => {
                 opt.classList.remove('active');
                 opt.querySelector('.fa-check').style.visibility = 'hidden';
@@ -42,18 +52,13 @@ document.addEventListener('DOMContentLoaded', function() {
             this.classList.add('active');
             this.querySelector('.fa-check').style.visibility = 'visible';
             
-            // Update bio translation
-            bioElement.textContent = translations[lang].bio;
-            
-            // Close dropdown
+            // Fermer le menu
             languageSelector.classList.remove('open');
         });
     });
     
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!languageSelector.contains(e.target)) {
-            languageSelector.classList.remove('open');
-        }
+    // Fermer le menu si on clique n'importe où ailleurs sur l'écran
+    document.addEventListener('click', function() {
+        languageSelector.classList.remove('open');
     });
 });
